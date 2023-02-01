@@ -1,0 +1,15 @@
+{
+    "name": "1340819/projekt",
+    "autoload": {
+        "psr-4": {
+            "1340819\\Projekt\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "kosmalski1",
+            "email": "pawelekk0505@gmail.com"
+        }
+    ],
+    "require": {}
+}
