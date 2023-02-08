@@ -24,15 +24,22 @@
 
         //pobierz pierwotną nazwę pliku z tablicy $_FILES
         $sourceFileName = $_FILES['uploadedFile']['name'];
-        
+        $tempURL = $_FILES['uploadedFile']['tmp_name'];
+        $imgInfo = getimagesize($tempURL);
+        if(!is_array($imgInfo)) {
+            die("BŁĄD: Przekazany plik nie jest obrazem!");
+        }
           //wyciągnij pierwotne rozszerzenie pliku
-          $sourceFileExtension = pathinfo($sourceFileName, PATHINFO_EXTENSION);
+         // $sourceFileExtension = pathinfo($sourceFileName, PATHINFO_EXTENSION);
           //zmień litery rozszerzenia na małe
-          $sourceFileExtension = strtolower($sourceFileExtension);
+         // $sourceFileExtension = strtolower($sourceFileExtension);
   
           //wygeneruj hash - nową nazwę pliku
           $newFileName = hash("sha256", $sourceFileName) . hrtime(true)
-                              . "." . $sourceFileExtension;
+                              . "." . "webp";
+                              
+            $imageString = file_get_contents($tempURL);
+            $gdImage = @imagecreatefromstring();
           //wygeneruj pełny docelowy URL
           $targetURL = $targetDir . $newFileName;
 
@@ -40,10 +47,7 @@
         $tempURL = $_FILES['uploadedFile']['tmp_name'];
 
         //sprawdź czy mamy do czynienia z obrazem
-        $imgInfo = getimagesize($tempURL);
-        if(!is_array($imgInfo)) {
-            die("BŁĄD: Przekazany plik nie jest obrazem!");
-        }
+        
 
         //zbuduj docelowy URL pliku na serwerze
       //  $targetURL = $targetDir . $sourceFileName;
@@ -54,7 +58,8 @@
         }
 
         //przesuń plik do docelowej lokalizacji
-        move_uploaded_file($tempURL, $targetURL);
+      //  move_uploaded_file($tempURL, $targetURL);
+      imagewebp($gdImage, $targetURL);
         echo "Plik został poprawnie wgrany na serwer";
     }
     ?>
