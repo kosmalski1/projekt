@@ -16,6 +16,7 @@
     </form>
 
     <?php
+    $db = new mysqli('localhost', 'root', '', 'baza_moja');
     //sprawdź czy został wysłany formularz
     if(isset($_POST['submit'])) 
     {
@@ -39,7 +40,7 @@
                               . "." . "webp";
                               
             $imageString = file_get_contents($tempURL);
-            $gdImage = @imagecreatefromstring();
+            $gdImage = @imagecreatefromstring($imageString);
           //wygeneruj pełny docelowy URL
           $targetURL = $targetDir . $newFileName;
 
@@ -61,6 +62,10 @@
       //  move_uploaded_file($tempURL, $targetURL);
       imagewebp($gdImage, $targetURL);
         echo "Plik został poprawnie wgrany na serwer";
+        $date = date("Y-m-d H:i:s");
+        $sqlpyt ="INSERT INTO post ( timestamp , filename ) VALUES ('$date' , '$newFileName' )";
+        $db->query($sqlpyt);
+        $db->close();
     }
     ?>
 </body>
