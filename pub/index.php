@@ -1,22 +1,28 @@
 <?php
-require('./../src/config.php');
+require_once('./../src/config.php');
+use Steampixel\Route;
+Route::add('/', function(){
+    global $twig;
+    $postArray = Post::getPage(); 
+    $twigData = array("postArray"=>$postArray, "pageTitle"=>"strona główna");
+    $twig->display("index.html.twig");
+});
 
-?>
-
-<form action="" method="post" enctype="multipart/form-data">
-        <label for="uploadedFileInput">
-            Wybierz plik do wgrania na serwer:
-        </label><br>
-        <input type="file" name="uploadedFile" id="uploadedFileInput" required><br>
-        <input type="submit" value="Wyślij plik" name="submit"><br>
-</form>
-
-<?php
-    //sprawdź czy został wysłany formularz
-    if(isset($_POST['submit']))  {
-        Post::upload($_FILES['uploadedFile']['tmp_name']);
-    }
-?>
-<?php
-var_dump(Post::getPage());
+Route::add('/upload', function() {
+    //strona z formularzem do wgrywania obrazków
+    global $twig;
+    
+    $twig->display("upload.html.twig");
+    });
+    Route::add('/upload', function() {
+        //wywoła się tylko po otrzymaniu danych metodą post na ten url
+        // (po wypełnieniu formularza)
+        global $twig;
+        if(isset($_POST['submit']))  {
+            Post::upload($_FILES['uploadedFile']['tmp_name']);
+        }
+        header("Location: http://localhost/projekt/projekt/pub/");
+        $twig->display("index.html.twig");
+    }, 'post');
+    Route::run('/projekt/projekt/pub');
 ?>
