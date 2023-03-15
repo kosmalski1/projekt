@@ -3,6 +3,7 @@
     <h1>{{pageTitle}}</h1>
    {% for post in postArray%}
 <img src="{{post.getFilename()}}">
-<h6>data dodania : {{post.getTimetamp()}}</h6>
+<h6>data dodania : {{post.getTimestamp()}}</h6>
+<h6>nazwa mema : {{post.getMemeName()}}</h6>
     {% endfor %}
 {% include 'footer.html.twig' %}

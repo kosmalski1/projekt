@@ -6,10 +6,12 @@ class Post {
     private int $id;
     private string $filename;
     private string $timestamp;
-    function __construct(int $i , string $f, string $t)
+    private string $namememe;
+    function __construct(int $i , string $f, string $t, string $n)
     {$this->id = $i;
         $this->filename = $f;
         $this->timestamp= $t;
+        $this->namememe= $n;
         
     }
     public function getFilename() : string{
@@ -18,7 +20,9 @@ class Post {
     public function getTimestamp() : string{
         return $this->timestamp;
     }
-
+    public function getMemeName() : string{
+        return $this->namememe;
+    }
 
 static function getLast():Post{
     global $db;
@@ -26,7 +30,7 @@ static function getLast():Post{
     $query ->execute();
     $result = $query->get_result();
     $row = $result->fetch_assoc();
-    $p = new Post ($row['id'], $row['filename'], $row['timestamp']);
+    $p = new Post ($row['id'], $row['filename'], $row['timestamp'], $row['namememe']);
     return $p;
 }
 
@@ -39,7 +43,7 @@ static function getPage (int $pageNumber= 1 , int $postPerPage= 10):array{
     $result = $query->get_result();
     $postsArray = array();
     while($row = $result->fetch_assoc()){
-        $post = new Post ($row['id'], $row['filename'], $row['timestamp']);
+        $post = new Post ($row['id'], $row['filename'], $row['timestamp'] , $row['namememe']);
         array_push($postsArray, $post);
     }
     return $postsArray;
@@ -73,14 +77,17 @@ static function getPage (int $pageNumber= 1 , int $postPerPage= 10):array{
         $gdImage = @imagecreatefromstring($imageString);
         //zapisujemy w formacie webp
         imagewebp($gdImage, $newFileName);
+
+
 //użyj globalnego połączenia
 global $db;
 //stwórz kwerendę
-$query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ?)");
+$query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ? , ?)");
 //przygotuj znacznik czasu dla bazy danych
 $dbTimestamp = date("Y-m-d H:i:s");
+$dbnamememe = $_POST['textmem'];
 //zapisz dane do bazy
-$query->bind_param("ss", $dbTimestamp, $newFileName);
+$query->bind_param("sss", $dbTimestamp, $newFileName, $dbnamememe);
 if(!$query->execute())
     die("Błąd zapisu do bazy danych");
     }
