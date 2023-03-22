@@ -7,12 +7,18 @@ class Post {
     private string $filename;
     private string $timestamp;
     private string $namememe;
-    function __construct(int $i , string $f, string $t, string $n)
-    {$this->id = $i;
+    private string $authorId;
+    private string $authorName;
+    function __construct(int $i , string $f, string $t, string $n , int $authorId)
+    {
+        $this->id = $i;
         $this->filename = $f;
         $this->timestamp= $t;
         $this->namememe= $n;
-        
+        $this->authorId = $authorId;
+        //pobierz z bazy danych imię / login autora posta
+        global $db;
+        $this->authorName = User::getNameById($this->authorId);
     }
     public function getFilename() : string{
         return $this->filename;
@@ -23,14 +29,16 @@ class Post {
     public function getMemeName() : string{
         return $this->namememe;
     }
-
+    public function getAuthorName() : string {
+        return $this->authorName;
+    }
 static function getLast():Post{
     global $db;
     $query = $db->prepare("SELECT * FROM post ORDER BY timestamp DESC LIMIT 1");
     $query ->execute();
     $result = $query->get_result();
     $row = $result->fetch_assoc();
-    $p = new Post ($row['id'], $row['filename'], $row['timestamp'], $row['namememe']);
+    $p = new Post ($row['id'], $row['filename'], $row['timestamp'], $row['namememe'], $row['userId']);
     return $p;
 }
 
@@ -43,7 +51,7 @@ static function getPage (int $pageNumber= 1 , int $postPerPage= 10):array{
     $result = $query->get_result();
     $postsArray = array();
     while($row = $result->fetch_assoc()){
-        $post = new Post ($row['id'], $row['filename'], $row['timestamp'] , $row['namememe']);
+        $post = new Post ($row['id'], $row['filename'], $row['timestamp'] , $row['namememe'], $row['userId']);
         array_push($postsArray, $post);
     }
     return $postsArray;
@@ -82,15 +90,13 @@ static function getPage (int $pageNumber= 1 , int $postPerPage= 10):array{
 //użyj globalnego połączenia
 global $db;
 //stwórz kwerendę
-$query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ? , ?)");
+$query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ? , ? , ?)");
 //przygotuj znacznik czasu dla bazy danych
 $dbTimestamp = date("Y-m-d H:i:s");
 $dbnamememe = $_POST['textmem'];
 //zapisz dane do bazy
-$query->bind_param("sss", $dbTimestamp, $newFileName, $dbnamememe);
+$query->bind_param("sssi", $dbTimestamp, $newFileName, $dbnamememe,  $userId);
 if(!$query->execute())
     die("Błąd zapisu do bazy danych");
     }
 }
-
-?>

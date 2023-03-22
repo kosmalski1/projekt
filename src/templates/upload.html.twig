@@ -3,9 +3,14 @@
     <label for="uploadedFileInput">
         Wybierz plik do wgrania na serwer:
     </label><br>
+    {% if user is defined %}
+    <div id="loggedUser">Zalogowany użytkownik: {{ user.getName() }} </div>
+    {% endif %}
     <input type="file" name="uploadedFile" id="uploadedFileInput" required><br>
       <input type="text" placeholder="wpisz nazwe mema" name="textmem"><br>
       <input type="submit" value="Wyślij plik" name="submit"><br>
-  
+      {% if user is defined %}
+      <input type="hidden" name="userId" value={{ user.getId() }}>
+      {% endif %}
 </form>
 {% include 'footer.html.twig' %}
