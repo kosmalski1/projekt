@@ -7,18 +7,18 @@ class Post {
     private string $filename;
     private string $timestamp;
     private string $namememe;
-    private string $authorId;
+    private string $userId;
     private string $authorName;
-    function __construct(int $i , string $f, string $t, string $n , int $authorId)
+    function __construct(int $i , string $f, string $t, string $n , int $userId)
     {
         $this->id = $i;
         $this->filename = $f;
         $this->timestamp= $t;
         $this->namememe= $n;
-        $this->authorId = $authorId;
+        $this->userId = $userId;
         //pobierz z bazy danych imię / login autora posta
         global $db;
-        $this->authorName = User::getNameById($this->authorId);
+        $this->authorName = User::getNameById($this->userId);
     }
     public function getFilename() : string{
         return $this->filename;
@@ -30,7 +30,7 @@ class Post {
         return $this->namememe;
     }
     public function getAuthorName() : string {
-        return $this->authorName;
+        return $this->userId;
     }
 static function getLast():Post{
     global $db;
@@ -58,7 +58,7 @@ static function getPage (int $pageNumber= 1 , int $postPerPage= 10):array{
 }
 
 
-    static function upload(string $tempFileName) {
+    static function upload(string $tempFileName, string $namememe, int $userId) {
         //deklarujemy folder do którego będą zaczytywane obrazy
         $targetDir = "img/";
         //sprawdź czy mamy do czynienia z obrazem
@@ -93,9 +93,9 @@ global $db;
 $query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ? , ? , ?)");
 //przygotuj znacznik czasu dla bazy danych
 $dbTimestamp = date("Y-m-d H:i:s");
-$dbnamememe = $_POST['textmem'];
+$dbnamememe = $_POST['namememe'];
 //zapisz dane do bazy
-$query->bind_param("sssi", $dbTimestamp, $newFileName, $dbnamememe,  $userId);
+$query->bind_param("ssss", $dbTimestamp, $newFileName, $dbnamememe,  $userId);
 if(!$query->execute())
     die("Błąd zapisu do bazy danych");
     }

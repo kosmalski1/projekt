@@ -7,7 +7,7 @@
     <div id="loggedUser">Zalogowany użytkownik: {{ user.getName() }} </div>
     {% endif %}
     <input type="file" name="uploadedFile" id="uploadedFileInput" required><br>
-      <input type="text" placeholder="wpisz nazwe mema" name="textmem"><br>
+      <input type="text" placeholder="wpisz nazwe mema" name="namememe"><br>
       <input type="submit" value="Wyślij plik" name="submit"><br>
       {% if user is defined %}
       <input type="hidden" name="userId" value={{ user.getId() }}>

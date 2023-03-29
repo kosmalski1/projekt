@@ -19,20 +19,23 @@ Route::add('/upload', function () {
     global $twig;
     $twigData = array("pageTitle" => "Wgraj mema");
     //jeśli użytkownik jest zalogowany to przekaż go do twiga
-    if(isset($_SESSION['user']))
+    if(User::isAuth())
+    {
         $twigData['user'] = $_SESSION['user'];
-    $twig->display("upload.html.twig" , $twigData);
+        $twig->display("upload.html.twig", $twigData);
+    } else {
+        http_response_code(403);
+    }
 });
 Route::add('/upload', function() {
     //wywoła się tylko po otrzymaniu danych metodą post na ten url
     // (po wypełnieniu formularza)
     global $twig;
     if(isset($_POST['submit']))  {
-        Post::upload($_FILES['uploadedFile']['tmp_name'], $_POST['memename']);
-        Post::upload($_FILES['uploadedFile']['tmp_name'], $_POST['memename'], $_POST['userId']);
+        Post::upload($_FILES['uploadedFile']['tmp_name'], $_POST['namememe'], $_POST['userId']);
     }
     //TODO: zmienić na ścieżkę względną
-    header("Location: http://localhost/cms/pub");
+    header("Location: http://localhost/projekt/projekt/pub");
 }, 'post');
 Route::add('/register', function() {
     global $twig;
@@ -56,11 +59,18 @@ Route::add('/login', function() {
 Route::add('/login', function(){
     global $twig;
     if(isset($_POST['submit'])) {
-        User::login($_POST['email'], $_POST['password']);
+        if(User::login($_POST['email'], $_POST['password'])) {
+            //zalogowano poprawnie
+            header("Location: http://localhost/projekt/projekt/pub");
+        } else {
+            //błąd logowania
+            $twigData = array('pageTitle' => "Zaloguj użytkownika",
+                                "message" => "Niepoprawny login lub hasło!");
+            $twig->display("login.html.twig", $twigData);
         }
-        header("Location: http://localhost/projekt/projekt/pub");
+    }
     
-}, 'post');
 
+}, 'post');
 
 Route::run('/projekt/projekt/pub');

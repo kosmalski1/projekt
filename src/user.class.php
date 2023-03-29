@@ -26,22 +26,37 @@ return $this->email;
     public static function register(string $email , string $password){
     global $db;
     $query =  $db->prepare("INSERT INTO user VALUES (NULL, ? , ?)");
-    $passwordhash = password_hash($password, PASSWORD_ARGON2I);
-    $query->bind_param('ss', $email, $passwordhash);
+    $passwordHash = password_hash($password, PASSWORD_ARGON2I);
+    $query->bind_param('ss', $email, $passwordHash);
     return $query->execute();
     
     }
-    public static function login(string $email , string $password){
+    public static function login(string $email , string $password):bool{
         global $db;
         $query = $db->prepare("SELECT * FROM user WHERE email = ? LIMIT 1");
         $query-> bind_param('s', $email);
         $query->execute();
         $result = $query->get_result();
         $row = $result->fetch_assoc();
-        $passwordhash= $row['password'];
-        if(password_verify($password, $passwordhash)){
+        $passwordHash= $row['password'];
+        if(password_verify($password, $passwordHash)){
             $u = new User($email, $row['id']);
             $_SESSION['user'] = $u;
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public static function isAuth() : bool {
+        //funkcja zwraca true jeśli użytkownik jest zalogowany
+        if(isset($_SESSION['user'])) {
+            if($_SESSION['user'] instanceof User) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }
