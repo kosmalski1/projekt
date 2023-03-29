@@ -20,6 +20,9 @@ class Post {
         global $db;
         $this->authorName = User::getNameById($this->userId);
     }
+    public function getId() : int{
+        return $this->id; 
+    }
     public function getFilename() : string{
         return $this->filename;
     }
@@ -30,7 +33,7 @@ class Post {
         return $this->namememe;
     }
     public function getAuthorName() : string {
-        return $this->userId;
+        return $this->authorName;
     }
 static function getLast():Post{
     global $db;
@@ -44,7 +47,7 @@ static function getLast():Post{
 
 static function getPage (int $pageNumber= 1 , int $postPerPage= 10):array{
     global $db;
-    $query = $db->prepare("SELECT * FROM post ORDER BY timestamp DESC LIMIT ? OFFSET ?");
+    $query = $db->prepare("SELECT * FROM post WHERE removed = 0 ORDER BY timestamp DESC LIMIT ? OFFSET ?");
     $offset = ($pageNumber-1)*$postPerPage;
     $query-> bind_param('ii', $postPerPage , $offset);
     $query-> execute();
@@ -98,5 +101,11 @@ $dbnamememe = $_POST['namememe'];
 $query->bind_param("ssss", $dbTimestamp, $newFileName, $dbnamememe,  $userId);
 if(!$query->execute())
     die("Błąd zapisu do bazy danych");
+    }
+    public static function remove($id) : bool {
+        global $db;
+        $query = $db->prepare("UPDATE post SET removed = 1 WHERE id = ?");
+        $query->bind_param("i", $id);
+        return $query->execute();
     }
 }
