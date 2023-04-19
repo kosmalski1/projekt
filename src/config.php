@@ -5,7 +5,7 @@ require("Post.class.php");
 require("user.class.php");
 
 $loader = new Twig\Loader\FilesystemLoader('./../src/templates');
-//inicjujemy twiga
+
 $twig = new Twig\Environment($loader);
 
 ?>
