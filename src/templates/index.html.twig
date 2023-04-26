@@ -1,10 +1,14 @@
 {% include 'header.html.twig' %}
 <div id="pageContainer">
     <h1>{{pageTitle}}</h1>
-
+<a href="login">zaloguj sie</a><br>
+    <a href="register">zarejestruj sie</a><br>
+    <button onclick="logOut()">wyloguj sie</button><br>
+    <a href="upload">dodaj post</a>
     {# jeśli użytkownik jest zalogowany to pokaż #}
     {% if user is defined %}
     <div id="loggedUser">Zalogowany użytkownik: {{ user.getName() }} </div>
+    
     {% endif %}
     {% for post in postArray %}
     <div id="post">
@@ -14,3 +18,13 @@
         <h6>Data dodania: {{ post.getTimestamp() }} </h6>
     </div>
     {% endfor %}
+    <script>
+        function logOut() {
+            var cookies = document.cookie.split(";");
+
+for (var i = 0; i < cookies.length; i++) {
+  var cookieName = cookies[i].split("=")[0];
+  document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";}
+    alert("zostałes wylogowany");
+    location.reload()}
+    </script>

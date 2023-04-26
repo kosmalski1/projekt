@@ -93,7 +93,7 @@ static function getPage (int $pageNumber= 1 , int $postPerPage= 10):array{
 //użyj globalnego połączenia
 global $db;
 //stwórz kwerendę
-$query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ? , ? , ?)");
+$query = $db->prepare("INSERT INTO post VALUES(NULL, ?, ? , ? , ? , 0)");
 //przygotuj znacznik czasu dla bazy danych
 $dbTimestamp = date("Y-m-d H:i:s");
 $dbnamememe = $_POST['namememe'];
