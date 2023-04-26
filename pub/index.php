@@ -91,4 +91,12 @@ Route::add('/admin/remove/([0-9]*)', function($id) {
         die("Nie udało się usunąć podanego obrazka");
     }
 });
+Route::add('/upvote/([0-9]*)', function($id) {
+    Vote::upVote($id, $_SESSION['user']->getId());
+    header("Location: http://localhost/projekt/projekt/pub/");
+});
+Route::add('/downvote/([0-9]*)', function($id) {
+    Vote::downVote($id, $_SESSION['user']->getId());
+    header("Location: http://localhost/projekt/projekt/pub/");
+});
 Route::run('/projekt/projekt/pub');
