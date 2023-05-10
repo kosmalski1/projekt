@@ -1,20 +1,78 @@
-{% include 'header.html.twig' %}
-<div id="pageContainer">
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pageTitle | default("strona z memami")}}</title>
+    <link rel="stylesheet" href="styl.css">
+</head>
+<body>
+    <div id="pageContainer">
     <h1>{{pageTitle}}</h1>
-<a href="login">zaloguj sie</a><br>
-    <a href="register">zarejestruj sie</a><br>
-    <button onclick="logOut()">wyloguj sie</button><br>
-    <a href="upload">dodaj post</a>
+    <div style="border: solid 5px;">
+    <a href="login" style="display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    color: aliceblue;
+    text-decoration: none;
+    background-color: blue;">zaloguj sie</a>
+    <a href="register" style="margin-left: 15%; display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    color: aliceblue;
+    text-decoration: none;
+    background-color: blue; background-color: black;">zarejestruj sie</a>
+    <button onclick="logOut()" style="margin-left: 15%; display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    color: aliceblue;
+    text-decoration: none;
+    background-color: blue;">wyloguj sie</button>
+    <a href="upload" style="margin-left: 15%;display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    color: aliceblue;
+    text-decoration: none;
+    background-color: blue;">dodaj post</a>
+    <a href="admin" style="margin-left: 15%; display: inline-block;
+    padding: 10px;
+    border-radius: 5px;
+    color: aliceblue;
+    text-decoration: none;
+    background-color: blue;">admin panel</a>
     {# jeśli użytkownik jest zalogowany to pokaż #}
     {% if user is defined %}
     <div id="loggedUser">Zalogowany użytkownik: {{ user.getName() }} </div>
-    
     {% endif %}
+    <style>
+		a {
+			
+		}
+	</style>
+
+    </div>
     {% for post in postArray %}
     <div id="post">
         <h2>{{ post.getMemeName() }} </h2>
         <img src="{{ post.getFilename() }}">
-        <h6>Punkty: {{post.getScore() }}</h6>
+        {% if post.getVote() == -1 %}
+        <button disabled>Downvote</button>
+        {% else %}
+        <a href="downvote/{{post.getId()}}">
+            <button>Downvote</button>
+        </a>
+        {% endif %}
+
+        {{ post.getScore() }}
+        {% if post.getVote() == 1 %}
+        <button disabled>Upvote</button>
+        {% else %}
+        <a href="upvote/{{post.getId()}}">
+            <button>Upvote</button>
+        </a>
+        {% endif %}
+
 
         <h6>Autor: {{post.getAuthorName() }}</h6>
         <h6>Data dodania: {{ post.getTimestamp() }} </h6>
@@ -24,9 +82,11 @@
         function logOut() {
             var cookies = document.cookie.split(";");
 
-for (var i = 0; i < cookies.length; i++) {
-  var cookieName = cookies[i].split("=")[0];
-  document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";}
-    alert("zostałes wylogowany");
-    location.reload()}
+            for (var i = 0; i < cookies.length; i++) {
+                var cookieName = cookies[i].split("=")[0];
+                document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            }
+            alert("zostałes wylogowany");
+            location.reload()
+        }
     </script>

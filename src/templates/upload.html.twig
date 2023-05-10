@@ -1,4 +1,13 @@
-{% include 'header.html.twig' %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pageTitle | default("strona z memami")}}</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+   <div id="pageContainer">
     <form action="" method="post" enctype="multipart/form-data">
     <label for="uploadedFileInput">
         Wybierz plik do wgrania na serwer:
@@ -12,5 +21,5 @@
       {% if user is defined %}
       <input type="hidden" name="userId" value={{ user.getId() }}>
       {% endif %}
-</form>
+</form></div>
 {% include 'footer.html.twig' %}
